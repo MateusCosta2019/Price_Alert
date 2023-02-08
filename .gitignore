@@ -1,0 +1,8 @@
+!.gitkeep
+DevOps/.terraform.lock.hcl
+DevOps/.terraform
+DevOps/terraform.tfstate
+DevOps/terraform.tfstate.backup
+Module/__pycache__/*
+.vscode/*
+teste/*
