@@ -1,10 +1,10 @@
 from Module.scrapper import accept_cookies, extract_csv, next_page, MLscraping, Magazinescraping
-from Module.carrega_dados_s3 import upload_to_s3, verify_local_file
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import os 
 from Module.logger import etlLogger
 from datetime import datetime
+from Module.carrega_dados_s3 import UploadDataIntoS3
 
 LabelProcess = 'WebScrapping'
 
@@ -72,13 +72,13 @@ def executorMagazine():
 def sendtobucket():
     proj_path = os.path.dirname(__file__)
     direxport = os.path.join(proj_path, 'datasets', 'Raw')
-    local_files, arquivo = verify_local_file(folder_path=direxport)
     s3_bucket = 'price-files-all-stores'
-
-    for path_files, files in zip(local_files, arquivo):
-        upload_to_s3(local_file=path_files, s3_bucket=s3_bucket, s3_file=f"Raw/{files}")
+    
+    upload = UploadDataIntoS3(s3_bucket=s3_bucket, folder_path=direxport, logger=LOGGER_OBJ)
+    upload.upload_to_s3()
+    upload.drop_files()
 
 if __name__=='__main__':
-    executorML()
-    executorMagazine()
+    # executorML()
+    # executorMagazine()
     sendtobucket()
