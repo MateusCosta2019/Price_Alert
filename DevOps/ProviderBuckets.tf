@@ -8,17 +8,18 @@ provider "aws" {
   region = "us-west-2"
 }
 
-resource "aws_s3_bucket" "magazine-luiza-data-files-prices"{
-    bucket = "magazine-luiza-data-files-prices"
+resource "aws_s3_bucket" "price-files-all-stores"{
+    bucket = "${var.bucket-name}"
+    acl = "private"
     tags = {
-        name = "Bucket MagazineLuiza"
-        Enviroment = "Prod"
+        name = "Bucket prices SmartPhones"
+        Enviroment = "Dev"
     }
 }
 
 locals {
-  bucket_id = aws_s3_bucket.magazine-luiza-data-files-prices.id
-  folders = ["Raw/", "Trusted/", "Refined/"]
+  bucket_id = aws_s3_bucket.price-files-all-stores.id
+  folders = "${var.folders}"
 }
 
 resource "aws_s3_bucket_object" "Folders" {

@@ -69,4 +69,5 @@ def executorMagazine():
     extract_csv(path=direxport, sep='|', logger=LOGGER_OBJ)
 
 if __name__=='__main__':
+    executorML()
     executorMagazine()
