@@ -1,13 +1,14 @@
 from Module.scrapper import accept_cookies, extract_csv, next_page, MLscraping, Magazinescraping
+from Module.carrega_dados_s3 import upload_to_s3, verify_local_file
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import os 
 from Module.logger import etlLogger
 from datetime import datetime
 
-LabelProcess = 'WebScrapping-RealState'
+LabelProcess = 'WebScrapping'
 
-LOGGER_OBJ = etlLogger(project_name='WebScrapping-RealState')
+LOGGER_OBJ = etlLogger(project_name='WebScrapping')
 LOGGER_OBJ.info(f'--->{LabelProcess}<---')
 LOGGER_OBJ.info(f'Start:{datetime.today().strftime("%Y-%m-%d %H:%M")}')
 
@@ -68,6 +69,16 @@ def executorMagazine():
  
     extract_csv(path=direxport, sep='|', logger=LOGGER_OBJ)
 
+def sendtobucket():
+    proj_path = os.path.dirname(__file__)
+    direxport = os.path.join(proj_path, 'datasets', 'Raw')
+    local_files, arquivo = verify_local_file(folder_path=direxport)
+    s3_bucket = 'price-files-all-stores'
+
+    for path_files, files in zip(local_files, arquivo):
+        upload_to_s3(local_file=path_files, s3_bucket=s3_bucket, s3_file=f"Raw/{files}")
+
 if __name__=='__main__':
     executorML()
     executorMagazine()
+    sendtobucket()
