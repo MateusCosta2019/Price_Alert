@@ -1,0 +1,10 @@
+{"timestamp": "2023-02-14 17:04:31,687", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "<module>",  "mensagem": "--->WebScrapping<---"}
+{"timestamp": "2023-02-14 17:04:31,687", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "<module>",  "mensagem": "Start:2023-02-14 17:04"}
+{"timestamp": "2023-02-14 17:04:39,428", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "executorML",  "mensagem": "--> Crawler performed successfully."}
+{"timestamp": "2023-02-14 17:04:44,513", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "next_page",  "mensagem": "Going to next page"}
+{"timestamp": "2023-02-14 17:04:45,091", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "executorML",  "mensagem": "--> Crawler performed successfully."}
+{"timestamp": "2023-02-14 17:04:50,926", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "next_page",  "mensagem": "Going to next page"}
+{"timestamp": "2023-02-14 17:04:51,387", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "executorML",  "mensagem": "--> Crawler performed successfully."}
+{"timestamp": "2023-02-14 17:04:56,888", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "next_page",  "mensagem": "Going to next page"}
+{"timestamp": "2023-02-14 17:04:57,376", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "extract_csv",  "mensagem": "--> Starting creation of .csv"}
+{"timestamp": "2023-02-14 17:04:57,400", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "extract_csv",  "mensagem": "--> Csv successfully create"}
