@@ -1,0 +1,8 @@
+{"timestamp": "2023-02-14 17:11:15,493", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "<module>",  "mensagem": "--->WebScrapping<---"}
+{"timestamp": "2023-02-14 17:11:15,493", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "<module>",  "mensagem": "Start:2023-02-14 17:11"}
+{"timestamp": "2023-02-14 17:11:20,461", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "executorML",  "mensagem": "--> Crawler performed successfully."}
+{"timestamp": "2023-02-14 17:11:26,048", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "next_page",  "mensagem": "Going to next page"}
+{"timestamp": "2023-02-14 17:11:27,501", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "executorML",  "mensagem": "--> Crawler performed successfully."}
+{"timestamp": "2023-02-14 17:11:32,602", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "next_page",  "mensagem": "Going to next page"}
+{"timestamp": "2023-02-14 17:11:33,050", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "extract_csv",  "mensagem": "--> Starting creation of .csv"}
+{"timestamp": "2023-02-14 17:11:33,070", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "extract_csv",  "mensagem": "--> Csv successfully create"}
