@@ -1,0 +1,19 @@
+# O Mercado de Smartphones no E-commerce: Uma Análise por Preços
+O Apache Airflow é uma plataforma de gerenciamento de workflows que é basicamente o passo a passo necessário para executar um processo. O Airflow é amplamente utilizado na área de engenharia de dados para orquestrar e automatizar pipelines de dados. O Airflow permite que os engenheiros criem, gerenciem e monitorem pipelines de dados de forma eficiente e escalável, é possível definir tarefas de forma clara e visual, agendar a execução de tarefas e garantir a integridade dos dados ao longo do pipeline.  Vale ressaltar que Aifrlow é uma ferramenta OpenSource. Originalmente, a plataforma foi projetada para ser executada em sistemas Unix e, portanto, a instalação e configuração do Airflow no sistema Windows pode ser um pouco mais complicada. Se você deseja testar o Airflow localmente em seu sistema Windows, a maneira mais simples de fazê-lo é usando imagens do Docker. 
+
+# Entendimento
+Nos últimos anos, o uso de smartphones tem aumentado significativamente no Brasil. De acordo com a pesquisa Mobile Time 2019, mais de 220 milhões de brasileiros possuem um smartphone. Com o aumento da demanda, o mercado de smartphones no e-commerce brasileiro tem crescido também.
+
+Para entender melhor a dinâmica desse mercado, realizei uma análise por preços, acessando todos os principais e-commerces brasileiros e registrando o preço de cada modelo de smartphone disponível. O objetivo era verificar as variações de preços entre os diferentes e-commerces e identificar os preços mais competitivos para o mesmo produto.
+
+Para percorrer todos os principais ecommerces e coletar cada informação de preço, opções de parcelamento e diversas outras informações, precisei utilizar webscrapping, pois seria demorado acessar mais de 300 paginas para coletar informações manualmente.
+
+# O que é web Scrapping
+Web scraping é uma técnica de coleta de dados de páginas web, automatizando o processo de extração de informações. É uma ferramenta útil para quem precisa obter dados rapidamente de um grande volume de informações. Neste projeto, utilizei o Python com a biblioteca Selenium e BeautifulSoup para fazer o scraping. A biblioteca Selenium é uma das mais utilizadas na automação de testes de aplicações web, mas também pode ser utilizada para web scraping. Ela permite acessar e interagir com elementos de uma página web, como clicar em botões, preencher formulários e extrair informações.
+
+# Data Lake
+
+Posteriomente os dados foram processados utilizando Pyspark no Databricks e enriquecidos com informações adicionais finalizando assim a parte de engenharia dos dados. Partindo para a analise em si para entender melhor a dinâmica desse mercado, a análise mostrou que existem grandes variações de modelos de smartphones e de preços entre os diferentes e-commerces para o mesmo produto. Alguns oferecem preços muito competitivos, enquanto outros são consideravelmente mais caros. Além disso, vale ressaltar que os preços dos smartphones são influenciados por diversos fatores, como a popularidade do modelo, a disponibilidade de estoque e a época do ano. Por exemplo, durante as promoções de fim de ano, muitos e-commerces oferecem descontos significativos em smartphones (Esses pontos não foram abordados nessa analise).
+
+Em conclusão, o mercado de smartphones no e-commerce brasileiro é altamente competitivo e oferece muitas opções para os consumidores. A análise por preços é uma ferramenta útil para compreender as variações de preços entre os diferentes e-commerces e identificar as tendências no mercado. Com isso, os consumidores podem tomar decisões de compra mais informadas e encontrar o melhor negócio para eles.
+Após coletar todas as informações necessárias amarzenei os dados em um datalake dividido entre camadas Row, Trusted e Refined como mostra a imagem abaixo.
