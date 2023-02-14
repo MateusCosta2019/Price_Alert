@@ -1,0 +1,5 @@
+{"timestamp": "2023-02-11 11:22:15,894", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "<module>",  "mensagem": "--->WebScrapping-RealState<---"}
+{"timestamp": "2023-02-11 11:22:15,894", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "<module>",  "mensagem": "Start:2023-02-11 11:22"}
+{"timestamp": "2023-02-11 11:22:15,894", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "main.py", "modulo": "main", "metodo": "executorML",  "mensagem": "--> Start Project"}
+{"timestamp": "2023-02-11 11:22:15,902", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "extract_csv",  "mensagem": "--> Starting creation of .csv"}
+{"timestamp": "2023-02-11 11:22:15,983", "processo": "MainProcess", "thread": "MainThread","level": "INFO", "script": "scrapper.py", "modulo": "scrapper", "metodo": "extract_csv",  "mensagem": "--> Csv successfully create"}

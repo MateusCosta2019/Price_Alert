@@ -11,7 +11,7 @@ dataset = []
 def accept_cookies(driver, id, logger):
     try:
         logger.info('Accepting cookies from the page')
-        driver.find_element(By.ID, id).click()
+        driver.find_element(By.CSS_SELECTOR, id).click()
     except Exception as e:
         logger.warn('Unable to find cookie acceptance button')
 
@@ -32,51 +32,58 @@ def next_page(driver, xpath, logger):
 def extract_csv(path, sep, logger):
     try:
         logger.info("--> Starting creation of .csv")
-        df = pd.DataFrame(data=dataset, columns=['valor', 'tipo_do_aluguel', 'descricao', 'condominium', 'iptu', 'andress', 'size', 'bedrooms', 'parking_spaces', 'bathrooms', 'news'])
+        df = pd.DataFrame(data=dataset)
         df.to_csv(path_or_buf=path, sep=sep)
         logger.info("--> Csv successfully create")
     except Exception as e:
         logger.error(f"--> Unable to extract csv, ERROR:{e}")
 
 # Scraping functions
-def zapscraping(driver, soup, logger):
+
+def MLscraping(driver, soup, logger):
     try:
-        cards = soup.find_all('div', class_='card-listing simple-card')
-        for apartments in cards:
+        card = soup.find_all('div', class_='ui-search-result__wrapper shops__result-wrapper')
+        for ap in card:
+            item = ap.find('h2', class_='ui-search-item__title shops__item-title').text
 
-            value = "".join([c for c in apartments.find('div', 'oz-datazap-stamp').text if c.isdigit()])
+            preco_original = ap.find('s', 'price-tag ui-search-price__part ui-search-price__original-value shops__price-part price-tag__disabled')
+            preco_original = preco_original.text if preco_original else 'null'
 
-            rent_type = apartments.find('small', class_='simple-card__business_type_rental text-small')
-            rent_type = rent_type.text.strip() if rent_type else "null"
+            tag_price = ap.find('span', 'price-tag ui-search-price__part shops__price-part')
+            value = tag_price.find('span', 'price-tag-fraction').text
 
-            description = apartments.find('span', class_='simple-card__text text-regular')
-            description = description.text if description else "null"
-
-            condominium = apartments.find('span', 'card-price__value')
-            condominium = condominium.text if condominium else "null"
+            parcelas = ap.find('span', class_='ui-search-item__group__element shops__items-group-details ui-search-installments ui-search-color--LIGHT_GREEN')
+            parcelas = parcelas.text if parcelas else 'null'
             
-            iptu = apartments.find('li', 'card-price__item iptu text-regular')
-            iptu = "".join([c for c in iptu.text if c.isdigit()]) if iptu else "null"
-            
-            andress = apartments.find('h2', 'simple-card__address color-dark text-regular')
-            andress = andress.text.strip() if andress else "null"
-
-            size = "".join([c for c in apartments.find('li', 'feature__item text-small js-areas').text if c.isdigit()])
-            bedrooms = "".join([c for c in apartments.find('li', 'feature__item text-small js-bedrooms').text if c.isdigit()])
-
-            parking_spaces = apartments.find('li', 'feature__item text-small js-parking-spaces')
-            parking_spaces = "".join([c for c in parking_spaces.text if c.isdigit()]) if parking_spaces else "null"
-            
-            bathrooms = "".join([c for c in apartments.find('li', 'feature__item text-small js-bathrooms').text if c.isdigit()])
-            
-            news = apartments.find('div', class_='simple-card__highligths')
-            news = news.text if news else 'null'
-
-            dataset.append([value, rent_type, description, condominium, iptu, andress, size, bedrooms, parking_spaces, bathrooms, news])
+            review = ap.find('span', 'ui-search-reviews__amount')
+            review = review.text if review else 'null'
+        
+            dataset.append([item, value, preco_original, parcelas, review])
             
     except Exception as e:
         logger.error('ERROR: Unable to get apartment information.', e)
         driver.quit()
 
-def quintoandarscraping():
-    pass
+def Magazinescraping(driver, soup, logger):
+    try:
+        card = soup.find_all('li', class_='sc-eCihoo BCSuy')
+        for ap in card:
+            item = ap.find('h2', class_='sc-kOjCZu enKhKW').text
+
+            preco_original = ap.find('p', 'sc-kDvujY gcLiKJ sc-dcntqk cJvvNV')
+            preco_original = preco_original.text if preco_original else 'null'
+
+            value = ap.find('p', 'sc-kDvujY jDmBNY sc-ehkVkK kPMBBS')
+            value = value.text if value else 'null'
+
+            parcelas = ap.find('p', class_='sc-kDvujY szpaO sc-eVspGN QAigN')
+            parcelas = parcelas.text if parcelas else 'null'
+            
+            review = ap.find('span', 'sc-hgRfpC dOenOK')
+            review = review.text if review else 'null'
+
+            dataset.append([item, value, preco_original, parcelas, review])
+            
+    except Exception as e:
+        logger.error('ERROR: Unable to get apartment information.', e)
+        driver.quit()
