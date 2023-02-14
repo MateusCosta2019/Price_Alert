@@ -13,7 +13,6 @@ class ScrapeData:
 
         self.driver = webdriver.Chrome('chromedriver')
         self.driver.get(url)
-        self.soup = BeautifulSoup(self.driver.page_source, "html.parser")
 
         self.tag_cookies = tag_cookies
         self.tag_btn_pag = tag_btn_pag
@@ -22,6 +21,9 @@ class ScrapeData:
         self.path = path
         self.dataset = []
         self.separtor = separtor
+
+    def integratesoup(self):
+        self.soup = BeautifulSoup(self.driver.page_source, "html.parser")
 
     def accept_cookies(self):
         try:
@@ -55,16 +57,17 @@ class ScrapeData:
             self.logger.error(f"--> Unable to extract csv, ERROR:{e}")
             return False
 
-    def scraping(self):
+    def get_cards(self):
         try:
-            card = self.soup.find_all(self.variables['Cards'][0], class_=self.variables['Cards'][1])
-            if len(card) <= 0:
+            self.card = self.soup.find_all(self.variables['Cards'][0], class_=self.variables['Cards'][1])
+            if len(self.card) <= 0:
                 self.logger.warn('--> No cards were found, check that the class entered is correct')
                 return False 
         except Exception as e:
             self.logger.error(f'--> It was not possible to get the cards from the page')
-        
-        for product in card:
+
+    def scraping(self):       
+        for product in self.card:
             Item = product.find(self.variables['Item'][0], class_=self.variables['Item'][1]).text
 
             Original_Price = product.find(self.variables['Original_Price'][0], class_=self.variables['Original_Price'][1])

@@ -23,7 +23,7 @@ def executorMagazine():
     url = 'https://www.magazineluiza.com.br/celulares-e-smartphones/l/te/'
     proj_path = os.path.dirname(__file__)
     filename = f'DataSmartPhonesMagazineLuiza{datetime.today().strftime("%Y%m%d")}.csv'
-    direxport = os.path.join(proj_path, 'datasets', filename)
+    direxport = os.path.join(proj_path, 'datasets', 'Raw', filename)
     variables = dict({
         'Cards': ['li', 'sc-eCihoo BCSuy'],
         'Item': ['h2','sc-kOjCZu enKhKW'],
@@ -42,6 +42,8 @@ def executorMagazine():
     while rep < 16:
         rep += 1
         try:
+            scrapper.integratesoup()
+            scrapper.get_cards()
             scrapper.scraping()
             LOGGER_OBJ.info("--> Crawler performed successfully.")
 
@@ -56,8 +58,8 @@ def executorML():
     url = 'https://lista.mercadolivre.com.br/celulares-smartphones#deal_print_id=c0e995d0-a98d-11ed-b11b-a59bf15bac8d&c_id=carousel&c_element_order=1&c_campaign=BOLOTA_CELULARES-E-SMARTPHONES&c_uid=c0e995d0-a98d-11ed-b11b-a59bf15bac8d'    
     proj_path = os.path.dirname(__file__)
     filename = f'DataSmartPhonesML{datetime.today().strftime("%Y%m%d")}.csv'
-    direxport = os.path.join(proj_path, 'datasets', filename)
-    variables = dict({
+    direxport = os.path.join(proj_path, 'datasets', 'Raw', filename)
+    variables = dict({ # pagina 5 l8star
         'Cards': ['div', 'ui-search-result__wrapper shops__result-wrapper'],
         'Item': ['h2','ui-search-item__title shops__item-title'],
         'Original_Price': ['s', 'price-tag ui-search-price__part ui-search-price__original-value shops__price-part price-tag__disabled'],
@@ -71,9 +73,11 @@ def executorML():
     
     rep = 0
 
-    while rep < 16:
+    while rep < 39:
         rep += 1
         try:
+            scrapper.integratesoup()
+            scrapper.get_cards()
             scrapper.scraping()
             LOGGER_OBJ.info("--> Crawler performed successfully.")
 
