@@ -1,10 +1,8 @@
-from Module.scrapper import accept_cookies, extract_csv, next_page, MLscraping, Magazinescraping
-from selenium import webdriver
-from bs4 import BeautifulSoup
+from Module.scrapper import ScrapeData
 import os 
 from Module.logger import etlLogger
 from datetime import datetime
-from Module.carrega_dados_s3 import UploadDataIntoS3
+from Module.load_data_s3 import UploadDataIntoS3
 
 LabelProcess = 'WebScrapping'
 
@@ -12,73 +10,48 @@ LOGGER_OBJ = etlLogger(project_name='WebScrapping')
 LOGGER_OBJ.info(f'--->{LabelProcess}<---')
 LOGGER_OBJ.info(f'Start:{datetime.today().strftime("%Y-%m-%d %H:%M")}')
 
-def executorML():
-    LOGGER_OBJ.info('--> Start Project')
-    url = "https://lista.mercadolivre.com.br/celulares-smartphones#deal_print_id=c0e995d0-a98d-11ed-b11b-a59bf15bac8d&c_id=carousel&c_element_order=1&c_campaign=BOLOTA_CELULARES-E-SMARTPHONES&c_uid=c0e995d0-a98d-11ed-b11b-a59bf15bac8d"
-
-    proj_path = os.path.dirname(__file__)
-    filename = f'DataSmartPhonesML{datetime.today().strftime("%Y%m%d")}.csv'
-    direxport = os.path.join(proj_path, 'datasets', filename)
-
-    driver = webdriver.Chrome('chromedriver')
-    driver.get(url)
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-
-    # accept_cookies(driver=driver, id="cookie-notifier-cta", logger=LOGGER_OBJ)
-
-    x = 0
-    LOGGER_OBJ.info("--> Starting crawler on ZAP Imoveis pages")
-    while x < 40:
-        x+=1
-        try:
-            MLscraping(driver=driver, soup=soup, logger=LOGGER_OBJ)
-            LOGGER_OBJ.info("--> Crawler performed successfully.")
-
-            next_page(driver=driver, xpath='.andes-pagination__button--next .andes-pagination__link', logger=LOGGER_OBJ)
-        except Exception as e:
-            print(e)
-            break
- 
-    extract_csv(path=direxport, sep='|', logger=LOGGER_OBJ)
-
-def executorMagazine():
-    LOGGER_OBJ.info('--> Start Project')
-    url = "https://www.magazineluiza.com.br/celulares-e-smartphones/l/te/"
-    proj_path = os.path.dirname(__file__)
-    filename = f'DataSmartPhonesMagazineLuiza{datetime.today().strftime("%Y%m%d")}.csv'
-    direxport = os.path.join(proj_path, 'datasets', filename)
-
-    driver = webdriver.Chrome('chromedriver')
-    driver.get(url)
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-
-    accept_cookies(driver=driver, id=".gVxVwR", logger=LOGGER_OBJ)
-
-    x = 0
-    LOGGER_OBJ.info("--> Starting crawler on Magazine Luiza pages")
-    while x < 16:
-        x+=1
-        try:
-            Magazinescraping(driver=driver, soup=soup, logger=LOGGER_OBJ)
-            LOGGER_OBJ.info("--> Crawler performed successfully.")
-
-            next_page(driver=driver, xpath='button[aria-label="Go to next page"]', logger=LOGGER_OBJ)
-        except Exception as e:
-            print(e)
-            break
- 
-    extract_csv(path=direxport, sep='|', logger=LOGGER_OBJ)
-
 def sendtobucket():
     proj_path = os.path.dirname(__file__)
     direxport = os.path.join(proj_path, 'datasets', 'Raw')
     s3_bucket = 'price-files-all-stores'
-    
+
     upload = UploadDataIntoS3(s3_bucket=s3_bucket, folder_path=direxport, logger=LOGGER_OBJ)
     upload.upload_to_s3()
     upload.drop_files()
 
+def executorteste():
+    url = 'https://www.magazineluiza.com.br/celulares-e-smartphones/l/te/'
+    proj_path = os.path.dirname(__file__)
+    filename = f'DataSmartPhonesMagazineLuiza{datetime.today().strftime("%Y%m%d")}.csv'
+    direxport = os.path.join(proj_path, 'datasets', filename)
+    variables = dict({
+        'Cards': ['li', 'sc-eCihoo BCSuy'],
+        'Item': ['h2','sc-kOjCZu enKhKW'],
+        'Original_Price': ['p', 'sc-kDvujY gcLiKJ sc-dcntqk cJvvNV'],
+        'Price': ['p', 'sc-kDvujY jDmBNY sc-ehkVkK kPMBBS'],
+        'Installment': ['p', 'sc-kDvujY szpaO sc-eVspGN QAigN'],
+        'Reviews': ['span', 'sc-hgRfpC dOenOK'],
+        })
+
+    scrapper = ScrapeData(logger=LOGGER_OBJ, url=url, tag_cookies='.gVxVwR', tag_btn_pag='button[aria-label="Go to next page"]', 
+                        path=direxport, separtor='|', variables=variables)
+    
+    scrapper.accept_cookies()
+    rep = 0
+
+    while rep < 16:
+        rep += 1
+        try:
+            scrapper.scraping()
+            LOGGER_OBJ.info("--> Crawler performed successfully.")
+
+            scrapper.next_page()
+        except Exception as e:
+            print(e)
+            break
+    
+    scrapper.extract_csv()
+    
 if __name__=='__main__':
-    # executorML()
-    # executorMagazine()
-    sendtobucket()
+    executorteste()
+    # sendtobucket()
