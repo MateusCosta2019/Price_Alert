@@ -3,87 +3,80 @@ from selenium.webdriver.support.ui import WebDriverWait
 from time import sleep
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+from bs4 import BeautifulSoup
 import pandas as pd 
 
-dataset = []
+class ScrapeData:
+    def __init__(self, url:str, tag_cookies:str, tag_btn_pag:str, path:str, separtor:str, logger:str, variables:dict):
+        self.logger = logger
 
-# helper functions
-def accept_cookies(driver, id, logger):
-    try:
-        logger.info('Accepting cookies from the page')
-        driver.find_element(By.CSS_SELECTOR, id).click()
-    except Exception as e:
-        logger.warn('Unable to find cookie acceptance button')
+        self.driver = webdriver.Chrome('chromedriver')
+        self.driver.get(url)
+        self.soup = BeautifulSoup(self.driver.page_source, "html.parser")
 
-def next_page(driver, xpath, logger):
-    try:
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        sleep(5)
-        next_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, xpath))
-        )
-        logger.info('Going to next page')
-        next_button.click() 
+        self.tag_cookies = tag_cookies
+        self.tag_btn_pag = tag_btn_pag
+        self.variables = variables
 
-    except Exception as e:
-        logger.warn('End of scraping, next button not found.')
-        driver.quit()
+        self.path = path
+        self.dataset = []
+        self.separtor = separtor
 
-def extract_csv(path, sep, logger):
-    try:
-        logger.info("--> Starting creation of .csv")
-        df = pd.DataFrame(data=dataset)
-        df.to_csv(path_or_buf=path, sep=sep)
-        logger.info("--> Csv successfully create")
-    except Exception as e:
-        logger.error(f"--> Unable to extract csv, ERROR:{e}")
+    def accept_cookies(self):
+        try:
+            self.logger.info('Accepting cookies from the page')
+            self.driver.find_element(By.CSS_SELECTOR, self.tag_cookies).click()
+        except Exception as e:
+            self.logger.warn(f'Unable to find cookie acceptance button erro: {e}')
 
-# Scraping functions
+    def next_page(self):
+        try:
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            sleep(5)
+            next_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.tag_btn_pag))
+            )
+            self.logger.info('Going to next page')
+            next_button.click() 
 
-def MLscraping(driver, soup, logger):
-    try:
-        card = soup.find_all('div', class_='ui-search-result__wrapper shops__result-wrapper')
-        for ap in card:
-            item = ap.find('h2', class_='ui-search-item__title shops__item-title').text
+        except Exception as e:
+            self.logger.warn('End of scraping, next button not found.')
+            self.driver.quit()
 
-            preco_original = ap.find('s', 'price-tag ui-search-price__part ui-search-price__original-value shops__price-part price-tag__disabled')
-            preco_original = preco_original.text if preco_original else 'null'
+    def extract_csv(self):
+        self.logger.info("--> Starting creation of .csv")
+        try:
+            df = pd.DataFrame(data=self.dataset)
+            df.to_csv(path_or_buf=self.path, sep=self.separtor)
+            self.logger.info("--> Csv successfully create")
+            return True
+        except Exception as e:
+            self.logger.error(f"--> Unable to extract csv, ERROR:{e}")
+            return False
 
-            tag_price = ap.find('span', 'price-tag ui-search-price__part shops__price-part')
-            value = tag_price.find('span', 'price-tag-fraction').text
-
-            parcelas = ap.find('span', class_='ui-search-item__group__element shops__items-group-details ui-search-installments ui-search-color--LIGHT_GREEN')
-            parcelas = parcelas.text if parcelas else 'null'
-            
-            review = ap.find('span', 'ui-search-reviews__amount')
-            review = review.text if review else 'null'
+    def scraping(self):
+        try:
+            card = self.soup.find_all(self.variables['Cards'][0], class_=self.variables['Cards'][1])
+            if len(card) <= 0:
+                self.logger.warn('--> No cards were found, check that the class entered is correct')
+                return False 
+        except Exception as e:
+            self.logger.error(f'--> It was not possible to get the cards from the page')
         
-            dataset.append([item, value, preco_original, parcelas, review])
+        for product in card:
+            Item = product.find(self.variables['Item'][0], class_=self.variables['Item'][1]).text
+
+            Original_Price = product.find(self.variables['Original_Price'][0], class_=self.variables['Original_Price'][1])
+            Original_Price = Original_Price.text if Original_Price else 'null'
+
+            Price = product.find(self.variables['Price'][0], class_=self.variables['Price'][1])
+            Price = Price.text if Price else 'null'
+
+            Installment = product.find(self.variables['Installment'][0], class_=self.variables['Installment'][1])
+            Installment = Installment.text if Installment else 'null'
             
-    except Exception as e:
-        logger.error('ERROR: Unable to get apartment information.', e)
-        driver.quit()
+            Reviews = product.find(self.variables['Reviews'][0], class_=self.variables['Reviews'][1])
+            Reviews = Reviews.text if Reviews else 'null'
 
-def Magazinescraping(driver, soup, logger):
-    try:
-        card = soup.find_all('li', class_='sc-eCihoo BCSuy')
-        for ap in card:
-            item = ap.find('h2', class_='sc-kOjCZu enKhKW').text
-
-            preco_original = ap.find('p', 'sc-kDvujY gcLiKJ sc-dcntqk cJvvNV')
-            preco_original = preco_original.text if preco_original else 'null'
-
-            value = ap.find('p', 'sc-kDvujY jDmBNY sc-ehkVkK kPMBBS')
-            value = value.text if value else 'null'
-
-            parcelas = ap.find('p', class_='sc-kDvujY szpaO sc-eVspGN QAigN')
-            parcelas = parcelas.text if parcelas else 'null'
-            
-            review = ap.find('span', 'sc-hgRfpC dOenOK')
-            review = review.text if review else 'null'
-
-            dataset.append([item, value, preco_original, parcelas, review])
-            
-    except Exception as e:
-        logger.error('ERROR: Unable to get apartment information.', e)
-        driver.quit()
+            self.dataset.append([Item, Price, Original_Price, Installment, Reviews])
